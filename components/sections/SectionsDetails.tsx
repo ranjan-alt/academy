@@ -19,7 +19,6 @@ import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
 import ProgressButton from "./ProgressButton";
 import SectionMenu from "../layout/SectionMenu";
-// import { useCurrentUser } from "@clerk/nextjs";
 
 interface SectionsDetailsProps {
   course: Course & { sections: Section[] };
@@ -41,40 +40,13 @@ const SectionsDetails = ({
   const [isLoading, setIsLoading] = useState(false);
   const isLocked = !purchase && !section.isFree;
 
-  // const buyCourse = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await axios.post(`/api/courses/${course.id}/checkout`);
-  //     window.location.assign(response.data.url);
-  //   } catch (err) {
-  //     console.log("Failed to chechout course", err);
-  //     toast.error("Something went wrong!");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-  // const { user } = useCurrentUser();
   const buyCourse = async () => {
-    if (!user || !user.id) {
-      toast.error("You must be logged in to purchase a course.");
-      return;
-    }
-
     try {
       setIsLoading(true);
-
-      // Simulate a successful purchase without going through Stripe
-      await axios.post(`/api/purchases`, {
-        courseId: course.id,
-        customerId: user.id, // Use the current user's ID here
-      });
-
-      toast.success("Course purchased successfully!");
-
-      // Optionally, you can update the purchase state to reflect the change
-      // This might require lifting state up or using context
+      const response = await axios.post(`/api/courses/${course.id}/checkout`);
+      window.location.assign(response.data.url);
     } catch (err) {
-      console.log("Failed to simulate course purchase", err);
+      console.log("Failed to chechout course", err);
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);
